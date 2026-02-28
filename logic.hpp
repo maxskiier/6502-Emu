@@ -8,6 +8,7 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include <bit>
 
 using byte = std::byte;
 
@@ -18,40 +19,50 @@ namespace logic
 
 class stack;
 
-uint8_t getLowOrderByte(int16_t number)
+uint8_t getLowOrderByte(uint16_t word)
+/* These are all technically UB but this is the easiest way to do it; it's a temporary solution */
 {
-#define LOW_ORDER 1
     union getByte
     {
-        int16_t inVal;
-        uint8_t outVal[];
+        uint16_t inVal;
+        uint8_t outVal[2];
     };
     getByte conv;
-    conv.inVal = number;
-    return conv.outVal[LOW_ORDER];
-#undef LOW_ORDER
+    conv.inVal = word;
+    return conv.outVal[0];
 }
-uint8_t getHighOrderByte(int16_t number)
+uint8_t getHighOrderByte(uint16_t word)
 {
-#define HIGH_ORDER 0
     union getByte
     {
-        int16_t inVal;
-        uint8_t outVal[];
+        uint16_t inVal;
+        uint8_t outVal[2];
     };
     getByte conv;
-    conv.inVal = number;
-    return conv.outVal[HIGH_ORDER];
-#undef HIGH_ORDER
+    conv.inVal = word;
+    return conv.outVal[1];
+}
+uint16_t consolidateBytes(uint8_t b1, uint8_t b2)
+// Byte 1 is high order, byte 2 is low order
+{
+    union putByte
+    {
+        uint8_t inVals[2];
+        uint16_t outVal;
+    };
+    putByte conv;
+    conv.inVals[0] = b2;
+    conv.inVals[1] = b1;
+    return conv.outVal;
 }
 
 class cpu
 {
 private:
     inline static uint16_t programCounterRegister;
-    inline static int8_t m_accumulatorRegister;
-    inline static int8_t m_xRegister;
-    inline static int8_t m_yRegister;
+    inline static uint8_t m_accumulatorRegister;
+    inline static uint8_t m_xRegister;
+    inline static uint8_t m_yRegister;
     inline static uint8_t statusRegister;
 
     inline static bool jammedState = false;
@@ -90,7 +101,7 @@ private:
     inline static std::array<byte, m_ramSize> m_ramContents;
 public:
 
-    byte read(uint16_t index)
+    byte read(uint16_t index) const
     {
         return m_ramContents[index];
     }
@@ -105,11 +116,11 @@ public:
 class rom
 {
 private:
-    std::ifstream runFile;
-    size_t knownRomSize = 0x8000;
-
+    static inline std::ifstream runFile;
+    static inline constexpr size_t knownRomSize = 0x8000;
+    static inline std::array<byte, knownRomSize> romData;
 public:
-    int openRom(int amntArgs, std::string passedMainArg, int mode = 0)
+    static int openRom(int amntArgs, std::string passedMainArg, int mode = 0)
     {
         runFile.exceptions(std::fstream::failbit | std::fstream::badbit); // Enable exceptions for easier error catching
         try
@@ -158,7 +169,7 @@ private:
     inline static constexpr size_t m_zpSize = 0x100;
     inline static std::array<byte, m_zpSize> m_zeroPageContents;
 public:
-    byte read(uint8_t address)
+    byte read(uint8_t address) const
     {
         return m_zeroPageContents[address];
     }
@@ -170,10 +181,6 @@ public:
 
 };
 
-
 };
-
-
-
 
 #endif // LOGIC_H
