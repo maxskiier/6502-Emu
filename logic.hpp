@@ -8,7 +8,8 @@
 #include <vector>
 #include <string>
 #include <fstream>
-#include <bit>
+
+/* Copyright 2025-2026 Maxwell Doose */
 
 using byte = std::byte;
 
@@ -19,6 +20,8 @@ namespace logic
 
 class stack;
 
+namespace endianConversion
+{
 uint8_t getLowOrderByte(uint16_t word)
 /* These are all technically UB but this is the easiest way to do it; it's a temporary solution */
 {
@@ -55,6 +58,7 @@ uint16_t consolidateBytes(uint8_t b1, uint8_t b2)
     conv.inVals[1] = b1;
     return conv.outVal;
 }
+}
 
 class cpu
 {
@@ -79,38 +83,47 @@ public:
     {
 
     }
-#define INTERRUPT_TYPE bool
-#define INTERRUPT false
-#define NMI true
+    typedef bool interruptType;
+    static inline constexpr bool regularInterrupt = false; // Aliases for the types of interrupts
+    static inline constexpr bool nmi = true;
 
-    inline static void interrupt(INTERRUPT_TYPE interruptType = INTERRUPT)
+    inline static void interrupt(interruptType interrupt = regularInterrupt)
     {
-        if (interruptType == INTERRUPT)
+        if (interrupt == regularInterrupt)
         {
             if ((statusRegister & 0b00000100) == 0b00000100) return; // Check the interrupt disable flag, if it's 1 we return
         }
     }
-#undef INTERRUPT_TYPE
 
 };
 
 class ram
 {
 private:
-    inline static constexpr size_t m_ramSize = 0x7800;
+    inline static constexpr size_t m_ramSize = 0xF00;
     inline static std::array<byte, m_ramSize> m_ramContents;
 public:
 
-    byte read(uint16_t index) const
+    static inline byte read(uint16_t index)
     {
         return m_ramContents[index];
     }
-
-    void write(uint16_t index, byte value)
+    static inline void write(uint16_t index, byte value)
     {
         m_ramContents[index] = value;
         return;
     }
+};
+
+template<class T>
+class addressSpaceDevice
+{
+private:
+    const T deviceType;
+    const uint16_t addressOffset, addressSize;
+    byte in, out;
+public:
+    addressSpaceDevice(const T type, const uint16_t offset, const uint16_t size) : deviceType(type), addressOffset(offset), addressSize(size) {}
 };
 
 class rom
@@ -120,7 +133,7 @@ private:
     static inline constexpr size_t knownRomSize = 0x8000;
     static inline std::array<byte, knownRomSize> romData;
 public:
-    static int openRom(int amntArgs, std::string passedMainArg, int mode = 0)
+    static inline int openRom(int amntArgs, std::string passedMainArg, int mode = 0)
     {
         runFile.exceptions(std::fstream::failbit | std::fstream::badbit); // Enable exceptions for easier error catching
         try
@@ -169,11 +182,11 @@ private:
     inline static constexpr size_t m_zpSize = 0x100;
     inline static std::array<byte, m_zpSize> m_zeroPageContents;
 public:
-    byte read(uint8_t address) const
+    static inline byte read(uint8_t address)
     {
         return m_zeroPageContents[address];
     }
-    void write(uint8_t address, byte data)
+    static inline void write(uint8_t address, byte data)
     {
         m_zeroPageContents[address] = data;
         return;

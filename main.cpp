@@ -3,6 +3,7 @@
 #include <fstream>
 #include "logic.hpp"
 
+/* Copyright 2025-2026 Maxwell Doose */
 
 int main(int argc, char* argv[])
 {
