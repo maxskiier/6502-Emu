@@ -7,7 +7,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_executable(6502Emulator main.cpp
     logic.hpp
-    csv/opcodes.csv)
+    csv/opcodes.csv
+    settings.ini)
 
 include(GNUInstallDirs)
 install(TARGETS 6502Emulator

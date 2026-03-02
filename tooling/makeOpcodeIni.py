@@ -32,8 +32,8 @@ for line in lines:
     opcode_hex = parts[0].strip()
     mnemonic = parts[1].strip()
     addrmode = parts[2].strip()
-    bytes_count = extract_last_number(parts[3])
-    cycles = extract_last_number(parts[4])
+    bytes_count = extract_last_number(parts[4])
+    cycles = extract_last_number(parts[3])
 
     unofficial = '1' if cycles == '*' else '0'
 
