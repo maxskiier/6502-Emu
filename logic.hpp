@@ -8,7 +8,6 @@
 #include <vector>
 #include <string>
 #include <fstream>
-#include <functional>
 #include "mINI/ini.h"
 
 /* Copyright 2025-2026 Maxwell Doose */
