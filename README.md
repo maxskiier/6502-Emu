@@ -1,5 +1,10 @@
 # 6502-Emu
-### Currently under development
+This is a generic 6502 emulator. You are free to use, fork, distribute, etc, so long as you follow the terms of the license.  
+## Development Status
+### *Currently under development*
+###### Alpha
+###### Beta
+###### Release
 ## How to build
 If you wish to use the cmake build system, there is a CMakeLists.txt file in the root of the repo.  
 Otherwise, any other compiler will do.
