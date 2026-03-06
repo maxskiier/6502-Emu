@@ -6,9 +6,18 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_executable(6502Emulator main.cpp
-    logic.hpp
-    csv/opcodes.csv
-    settings.ini)
+    headers/logic.hpp
+    headers/addrSpace.hpp
+    headers/ppu.hpp
+    headers/baseEngine.hpp
+    headers/cpu.hpp
+    implementations/baseEngine.cpp
+    implementations/cpu.cpp
+    implementations/logic.cpp
+    implementations/ppu.cpp
+    implementations/addrSpace.cpp
+)
+target_compile_options(6502Emulator PRIVATE -v)
 
 include(GNUInstallDirs)
 install(TARGETS 6502Emulator

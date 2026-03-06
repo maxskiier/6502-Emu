@@ -3,13 +3,15 @@
 #include <fstream>
 #include <string>
 #include <filesystem>
-#include "logic.hpp"
-#include "mINI/ini.h"
+#include <bit>
+#include "iniLib/ini.h"
 
 /* Copyright 2025-2026 Maxwell Doose */
 std::filesystem::path fileName;
-static std::string specificArg;
-static constexpr std::array<std::string,12> expectedExtensions
+bool helpArg = false;
+bool shellArg = false;
+
+constexpr std::array<std::string, 12> expectedExtensions
 {
     ".bin",
     ".obj",
@@ -32,24 +34,39 @@ int8_t shell();
 int main(int argc, char* argv[])
 {
     std::vector<std::string> passedArgs(argv, argv + argc);
-    std::println("6502 Emulator\nCopyright 2026 by Maxwell Doose");
+#ifndef _WIN32
+    std::println("6502 Emulator\nCopyright 2026 Maxwell Doose");
+#else
+    std::println("6502 Emulator\n\rCopyright 2026 Maxwell Doose");
+#endif
+
     if ((argc == 1) or (!chkFilePresence(passedArgs)))
     {
         std::println("Fatal: No file to run (run with -h for help)");
         return 1;
     }
-    if (specificArg == "-s" or "/s")
+    if (helpArg)
     {
-        shell();
+#ifndef _WIN32
+        std::println("Usage: emu65 [-h] | [-s]\n-h: Print help message to the console\n-s: Enter shell mode");
+#else
+        std::println("Usage: emu65 [-h] | [-s]\r\n-h: Print help message to the console\r\n-s: Enter shell mode");
+#endif
+        return 0;
     }
+    else if (shellArg)
+    {
+        return shell();
+    }
+    std::println("Loading {} . . .", static_cast<std::string>(fileName.filename()));
     if (!std::filesystem::exists(fileName))
     {
-        std::println("Fatal: File {} doesn't exist", static_cast<std::string>(fileName));
+        std::println("Fatal: File {} doesn't exist", static_cast<std::string>(fileName.filename()));
         return 2;
     }
     if (!chkValidExtension(fileName))
     {
-        std::println("Fatal: File {} has invalid extension", static_cast<std::string>(fileName));
+        std::println("Fatal: File {} has invalid extension", static_cast<std::string>(fileName.filename()));
         char gotChar;
         std::println("Valid extensions: ");
         for (const auto& ext : expectedExtensions)
@@ -58,24 +75,34 @@ int main(int argc, char* argv[])
         }
         return 3;
     }
+
     return 0;
 }
 
 bool chkFilePresence(std::vector<std::string> argVec)
 {
-    uint8_t where = 1;
+    uint8_t where = 0;
     static uint8_t whereRet;
     bool fileFound = false;
     for (const std::string& str : argVec)
     {
-        if (str.starts_with('-' or '/'))
+        if (where == 0)
         {
             where++;
-            if (str.starts_with("-h" or "/h" or "-s" or "/s"))
+            continue;
+        }
+        if (str.starts_with('-') or str.starts_with('/')) // Prevents warnings relating to comparing constant operands with a logical or
+        {
+            where++;
+            if (str == "-h" or "/h")
             {
-                specificArg = str;
-                fileFound = true;
-                return fileFound;
+                helpArg = true;
+                return true;
+            }
+            else if (str == "-s" or "/s")
+            {
+                shellArg = true;
+                return true;
             }
             continue;
         }
