@@ -16,8 +16,9 @@ add_executable(6502Emulator main.cpp
     implementations/logic.cpp
     implementations/ppu.cpp
     implementations/addrSpace.cpp
+    headers/engineImplementations/win32.hpp
+    headers/engineImplementations/wayland.hpp
 )
-target_compile_options(6502Emulator PRIVATE -v)
 
 include(GNUInstallDirs)
 install(TARGETS 6502Emulator

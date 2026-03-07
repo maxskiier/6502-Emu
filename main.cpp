@@ -11,6 +11,11 @@ std::filesystem::path fileName;
 bool helpArg = false;
 bool shellArg = false;
 
+class cpu;
+class ppu;
+extern cpu* primary;
+extern ppu* graphics;
+
 constexpr std::array<std::string, 12> expectedExtensions
 {
     ".bin",
@@ -35,9 +40,9 @@ int main(int argc, char* argv[])
 {
     std::vector<std::string> passedArgs(argv, argv + argc);
 #ifndef _WIN32
-    std::println("6502 Emulator\nCopyright 2026 Maxwell Doose");
+    std::println("emu65\nCopyright 2026 Maxwell Doose");
 #else
-    std::println("6502 Emulator\n\rCopyright 2026 Maxwell Doose");
+    std::println("emu65\n\rCopyright 2026 Maxwell Doose");
 #endif
 
     if ((argc == 1) or (!chkFilePresence(passedArgs)))

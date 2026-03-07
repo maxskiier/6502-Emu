@@ -5,15 +5,16 @@
 namespace logic
 {
 
-void engine::cycle()
+Task engine::cycle()
 {
-    ppuPtr->cycle();
-    if (this->awaitCPUCycle == 0)
-    {
-        cpuPtr->cycle();
-        this->cpuCycleCounter++;
-        this->awaitCPUCycle = 0;
-    } else this->awaitCPUCycle--;
+    // ppuPtr->cycle();
+    // ppuCycleCounter++;
+    // if (this->awaitCPUCycle == 0)
+    // {
+    //     cpuPtr->cycle();
+    //     this->cpuCycleCounter++;
+    //     this->awaitCPUCycle = 0;
+    // } else this->awaitCPUCycle--;
 }
 
 }

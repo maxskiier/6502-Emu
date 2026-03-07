@@ -1,5 +1,3 @@
-#pragma once
-
 #include "../headers/ppu.hpp"
 
 namespace logic

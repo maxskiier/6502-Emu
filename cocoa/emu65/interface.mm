@@ -10,11 +10,11 @@ struct ppuAPI
 };
 
 static void tickImpl() {
-    engine.cycle();
+    engine->cycle();
 }
 
 static uint8_t* framebufferImpl() {
-    return ppu.fbPtrGetter();
+    return ppu->fbPtrGetter();
 }
 
 static void keyDownImpl(int key) {

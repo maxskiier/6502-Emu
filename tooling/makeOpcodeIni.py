@@ -29,7 +29,7 @@ for line in lines:
     if len(parts) < 5:
         continue
 
-    opcode_hex = parts[0].strip()
+    opcode_hex = int(parts[0].strip(), 16)
     mnemonic = parts[1].strip()
     addrmode = parts[2].strip()
     bytes_count = extract_last_number(parts[4])

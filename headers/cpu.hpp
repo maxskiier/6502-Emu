@@ -14,11 +14,21 @@ private:
     uint8_t m_accumulatorRegister;
     uint8_t m_xRegister;
     uint8_t m_yRegister;
-    uint8_t statusRegister;
+    uint8_t m_statusRegister;
+    uint8_t bus;
+    std::string instructionType;
 
-    uint8_t cpuStep = 0b00000000;
+    uint8_t cpuStep = 0;
     /* Decimal 1 is fetch, decimal 2 is decode, decimal 3 is execute */
+    uint8_t tState = 0;
+
     bool jammedState = false;
+
+    std::string decodeT1(uint8_t opcode);
+    std::string decodeT2(uint8_t opcode);
+#define READ false
+#define WRITE true
+    bool rw = READ;
     cpu* CPUPtr = this;
 public:
     void cycle();
@@ -50,7 +60,7 @@ public:
     };
     m_stack stackInterface;
 
-    void reset();
+    void reset(bool coldStart = false);
     typedef bool interruptType;
     static constexpr bool regularInterrupt = false; // Aliases for the types of interrupts
     static constexpr bool nmi = true;

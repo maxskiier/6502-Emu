@@ -27,16 +27,28 @@ extern logic::ppu ppu;
 namespace logic
 {
 
-constexpr uint16_t makeWord(uint8_t lo, uint8_t hi) noexcept {
+constexpr uint16_t makeWord(uint8_t lo, uint8_t hi) noexcept
+{
     return static_cast<uint16_t>(lo) | (static_cast<uint16_t>(hi) << 8);
 }
 
-constexpr uint8_t getLoByte(uint16_t word) noexcept {
+constexpr uint8_t getLoByte(uint16_t word) noexcept
+{
     return static_cast<uint8_t>(word & 0x00FF);
 }
 
-constexpr uint8_t getHiByte(uint16_t word) noexcept {
+constexpr uint8_t getHiByte(uint16_t word) noexcept
+{
     return static_cast<uint8_t>((word >> 8) & 0x00FF);
+}
+
+constexpr std::string eightBitIntToStr(const uint8_t conv) noexcept
+{
+    return std::to_string(static_cast<unsigned int>(conv));
+}
+constexpr uint8_t strToEightBitInt(const std::string &conv) noexcept
+{
+    return static_cast<uint8_t>(std::stoi(conv));
 }
 
 class iniInterface final
@@ -52,8 +64,8 @@ private:
 public:
     iniInterface() : settingsFile("settings.ini"), opcodesFile("opcodes.ini") { initialized = true; }
 
-    std::string readSettingsINFSection(std::string section, std::string key);
-    std::string readOpcodesINFSection(std::string section, std::string key);
+    std::string readSettingsINISection(std::string section, std::string key);
+    std::string readOpcodesINISection(std::string section, std::string key);
 };
 
 };
