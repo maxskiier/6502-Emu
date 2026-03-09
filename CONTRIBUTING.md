@@ -31,7 +31,7 @@ These are the current syntax conventions for the 6502-Emu/emu65 project:
 - Definitions should be on one line
 ### Variables:
 - Brace definition (e.g., `int number(42);`) should ideally use one line, however multiple may be used for readability  
-- Otherwise, definitions should be one one line  
+- Otherwise, definitions should be on one line  
 - Increment operator:  
     - The postfix increment should be used primarially  
         - `i++;`  
