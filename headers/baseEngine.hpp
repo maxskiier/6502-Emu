@@ -28,19 +28,11 @@ extern ppu* graphics;
 
 struct Task
 {
-    template<typename T>
     struct promise_type
     {
-    private:
-        T* baseStruct;
     public:
         std::exception_ptr exception_;
-        promise_type(T* base)
-        {
-            *baseStruct = base;
-            return;
-        }
-        std::suspend_never initial_suspend()
+        std::suspend_always initial_suspend()
         {
             return {};
         }
@@ -51,13 +43,24 @@ struct Task
 
         auto yield_value(uint8_t step)
         {
-            baseStruct->cpuStep = step;
+            cpuStep = step;
             return std::suspend_always{};
         }
 
+        static constexpr uint8_t fetch = 0;
+        static constexpr uint8_t decode = 1;
+#define T_STATE(n) static constexpr uint8_t executeT##n = n
+        T_STATE(1); // Damned pice of shit consteval not working...
+        T_STATE(2); // Temporary until C++26 releases
+        T_STATE(3); // Reflection will be used in the future
+        T_STATE(4);
+        T_STATE(5);
+        T_STATE(6);
+        T_STATE(7);
+#undef T_STATE
         Task get_return_object()
         {
-            return {};
+            return Task{std::coroutine_handle<promise_type>::from_promise(*this)};
         }
         void return_void()
         {
@@ -69,12 +72,12 @@ struct Task
             exception_ = std::current_exception();
             return;
         }
+        uint8_t cpuStep = 0;
 
         ~promise_type() = default;
     };
-    uint8_t cpuStep = 0;
 
-    promise_type<Task> promise{this};
+    std::coroutine_handle<promise_type> promise;
 };
 
 class engine

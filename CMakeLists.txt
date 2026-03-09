@@ -18,6 +18,7 @@ add_executable(6502Emulator main.cpp
     implementations/addrSpace.cpp
     headers/engineImplementations/win32.hpp
     headers/engineImplementations/wayland.hpp
+    CONTRIBUTING.md
 )
 
 include(GNUInstallDirs)
