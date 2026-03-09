@@ -4,9 +4,9 @@ This contains the style guide, and in the future will include other things that 
 
 ## Style Guide (Naming Conventions)
 These are the current naming conventions for the 6502-Emu/emu65 project:
-### Classes and structs:
-- Utilize PascalCase for new classes and structs  
-    - Already existing classes and structs use camelCase
+### Classes, enums, and structs:
+- Utilize PascalCase for new classes, structs, and enums 
+    - Already existing classes, structs, and enums use camelCase
 ### Outside of structs/classes:  
 - Variable names:  
     - camelCase  
@@ -20,6 +20,8 @@ These are the current naming conventions for the 6502-Emu/emu65 project:
     - camelCase
 ### Members of an enum:
 - PascalCase
+- SCREAMING_SNAKE_CASE
+### Macros:
 - SCREAMING_SNAKE_CASE
 ## Style Guide (Syntax Conventions)
 These are the current syntax conventions for the 6502-Emu/emu65 project:  
