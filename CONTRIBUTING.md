@@ -17,7 +17,10 @@ These are the current naming conventions for the 6502-Emu/emu65 project:
     - camelCase  
         - If you wish, you may to prepend `m_` to the name  
 - Function names:  
-    - camelCase  
+    - camelCase
+### Members of an enum:
+- PascalCase
+- SCREAMING_SNAKE_CASE
 ## Style Guide (Syntax Conventions)
 These are the current syntax conventions for the 6502-Emu/emu65 project:  
 ### Classes and Structs:
